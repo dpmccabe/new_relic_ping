@@ -3,6 +3,8 @@ require_dependency "new_relic_ping/application_controller"
 module NewRelicPing
   class HealthController < ApplicationController
 
+    around_filter :no_logging
+
     # Return an okay if the Application Server is alive
     def ping
       send_response(:ok)
@@ -16,6 +18,10 @@ module NewRelicPing
     end
 
     protected
+
+    def no_logging
+      quietly { yield }
+    end
 
     def send_response(status_msg, meta_info = {})
       write_headers(meta_info)
